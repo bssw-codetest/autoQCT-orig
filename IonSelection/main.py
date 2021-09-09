@@ -22,12 +22,11 @@ age = args.age
 
 ##### If the ion a halide then add this to the pattern search cp2k trajectory ######
 
-if ion != "OH" and ion != "H":
-    cp2K_search = str("(?:i |H|O|" + ion + ")")
-
-####### If ion is proton or hydroxide then trajectory search is just oxygen and hydrogen ######
-else:
+if ion in {"OH", "H"}:
     cp2K_search = "(?:i |H|O)"
+
+else:
+    cp2K_search = str("(?:i |H|O|" + ion + ")")
 
 #### Send pattern to data read in in atom.py and return them as a pandas dataframe###
 pattern = re.compile(cp2K_search)
@@ -37,11 +36,7 @@ clusterSize = dataFrameList[2]
 pdFrames = pd.DataFrame.from_records([Frame.to_dict() for Frame in dataFrameList[0]])
 itr = 1
 
-if age == "Y":
-    age = math.floor(maxFrame/2)
-else:
-    age = 0
-
+age = math.floor(maxFrame/2) if age == "Y" else 0
 ##### find if ion is hydroxide #####
 if ion == "OH":
 
@@ -59,9 +54,8 @@ if ion == "OH":
         if clusterBool:
             ## If it is a cluster print the configurations ##
             cl.printClusterHydroxide(waterHydrogen, waterOxygen, hydroxideOxygen, hydroxideHydrogen, cluster, itr)
-            itr = itr + 1
+            itr += 1
 
-#### find if ion is a proton ####
 elif ion == "H":
 
     for cluster in range(age, maxFrame):
@@ -76,10 +70,9 @@ elif ion == "H":
 
         if clusterBool:
             cl.printClusterHydroxide(waterHydrogen, waterOxygen, protonHydrogen, cluster, itr)
-            itr = itr + 1
+            itr += 1
 
-### If ion is a halide ###
-elif ion == "F" or ion == "Cl" or ion == "Br" or ion == "I":
+elif ion in {"F", "Cl", "Br", "I"}:
     print("Hello")
     for cluster in range(age, maxFrame):
 
@@ -93,7 +86,7 @@ elif ion == "F" or ion == "Cl" or ion == "Br" or ion == "I":
         if clusterBool:
 
             cl.printClusterIon(waterHydrogen, waterOxygen, ionFrame, cluster, itr)
-            itr = itr + 1
+            itr += 1
 
 else:
     print("Ion not available")

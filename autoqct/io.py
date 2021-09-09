@@ -8,8 +8,4 @@ from .xdrfile import xdrfile
 
 def read_xdr(filename):
     xdr = xdrfile(filename)
-    crds = []
-    for frame in xdr:
-        crds.append( frame.x.copy() )
-
-    return crds
+    return [frame.x.copy() for frame in xdr]

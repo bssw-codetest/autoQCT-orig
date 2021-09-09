@@ -47,12 +47,10 @@ class Sys:
         self.mols = mols
     def name_iter(self):
         for m in self.mols:
-            for a in m.name_iter():
-                yield a
+            yield from m.name_iter()
     def x_iter(self):
         for m in self.mols:
-            for x in m.x_iter():
-                yield x
+            yield from m.x_iter()
 
     def tot_charge(self):
         return sum(m.tot_charge() for m in self.mols)
