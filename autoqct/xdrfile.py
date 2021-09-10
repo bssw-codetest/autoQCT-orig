@@ -85,9 +85,7 @@ class xdrfile:
 
         if ft == "trr":
             self.mode |= mTrr
-        elif ft == "xtc":
-            pass
-        else:
+        elif ft != "xtc":
             raise IOError("Only xtc and trr supported")
 
         # load libxdrfile

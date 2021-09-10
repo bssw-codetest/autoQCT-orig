@@ -4,8 +4,7 @@ from functools import reduce
 
 def bondLength(atom1, atom2):
 
-    l = np.sqrt((atom1.x-atom2.x)**2+(atom1.y-atom2.y)**2+(atom1.z-atom2.z)**2)
-    return l
+    return np.sqrt((atom1.x-atom2.x)**2+(atom1.y-atom2.y)**2+(atom1.z-atom2.z)**2)
 
 def angles(atom1, atom2, atom3):
 
@@ -29,17 +28,15 @@ def isWater(atomH1, atomO, atomH2):
     l2 = bondLength(atomH2, atomO)
     theta = angles(atomH1, atomO, atomH2)
     # np.abs(1.043 - l1) <= 0.1 and np.abs(1.043 - l2) <= 0.1 and np.abs(theta-105.5) <= 10:
-    if np.abs(1.043 - l1) <= 0.15 and np.abs(1.043 - l2) <= 0.15 and np.abs(theta - 105.5) <= 15:
-        return True
-    else:
-        return False
+    return (
+        np.abs(1.043 - l1) <= 0.15
+        and np.abs(1.043 - l2) <= 0.15
+        and np.abs(theta - 105.5) <= 15
+    )
 
 def isHydroxide(atomH, atomO):
     l = bondLength(atomH,atomO)
-    if(np.abs(0.95-l) < 0.5):
-        return True
-    else:
-        return False
+    return (np.abs(0.95-l) < 0.5)
 
 def isClustered(ionX, waterH, clusterLength):
 
@@ -54,11 +51,7 @@ def isClustered(ionX, waterH, clusterLength):
     return bool(reduce((lambda x, y: x * y), boolVar))
 
 def isIon(ion):
-    ##### Could Need Work #####
-    if ion == 'Cl' or 'F' or 'Br' or 'I':
-        return True
-    else:
-        return False
+    return True
 
 def isProton(protonHydrogen):
     ##### Could Need Work #####

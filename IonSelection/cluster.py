@@ -22,16 +22,16 @@ def clusterHydroxide(pdFrame, clusterSize, clusterLength):
 
     for oxygen in oxygenList:
 
-        for n in range(len(hydrogenCombs)):
-            atomH1 = pdFrame.loc[hydrogenCombs[n][0]]
-            atomH2 = pdFrame.loc[hydrogenCombs[n][1]]
+        for hydrogenComb in hydrogenCombs:
+            atomH1 = pdFrame.loc[hydrogenComb[0]]
+            atomH2 = pdFrame.loc[hydrogenComb[1]]
             atomO = pdFrame.loc[oxygen]
 
             if mo.isWater(atomH1, atomO, atomH2):
                 isWaterBool.append(True)
-                waterHydrogenIndex.append(hydrogenCombs[n][0])
-                waterHydrogenIndex.append(hydrogenCombs[n][1])
-                waterHydrogenPairIndex.append([hydrogenCombs[n][0], hydrogenCombs[n][1]])
+                waterHydrogenIndex.append(hydrogenComb[0])
+                waterHydrogenIndex.append(hydrogenComb[1])
+                waterHydrogenPairIndex.append([hydrogenComb[0], hydrogenComb[1]])
                 waterOxygenIndex.append(oxygen)
 
     if sum(isWaterBool) == (clusterSize - 2) / 3:
@@ -67,26 +67,24 @@ def printClusterHydroxide(waterHydrogen, waterOxygen, hydroxideOxygen, hydroxide
         os.mkdir("full")
 
     fullFileName = str("full/" + str(itr) + ".com")
-    file = open(fullFileName, "w")
-    file.write("t = " + str(cluster) + "\n")
-    file.write('FULL CLUSTER' + "\n")
+    with open(fullFileName, "w") as file:
+        file.write("t = " + str(cluster) + "\n")
+        file.write('FULL CLUSTER' + "\n")
 
-    for m in range(len(waterOxygen)):
-        atomH1 = waterHydrogen[m][0]
-        atomH2 = waterHydrogen[m][1]
-        atomO = waterOxygen[m]
-        file.write(str(atomO.type + "\t" + str(atomO.x) + "\t" + str(atomO.y) + "\t" + str(atomO.z) + "\n"))
-        file.write(str(atomH1.type + "\t" + str(atomH1.x) + "\t" + str(atomH1.y) + "\t" + str(atomH1.z) + "\n"))
-        file.write(str(atomH2.type + "\t" + str(atomH2.x) + "\t" + str(atomH2.y) + "\t" + str(atomH2.z) + "\n"))
+        for m in range(len(waterOxygen)):
+            atomH1 = waterHydrogen[m][0]
+            atomH2 = waterHydrogen[m][1]
+            atomO = waterOxygen[m]
+            file.write(str(atomO.type + "\t" + str(atomO.x) + "\t" + str(atomO.y) + "\t" + str(atomO.z) + "\n"))
+            file.write(str(atomH1.type + "\t" + str(atomH1.x) + "\t" + str(atomH1.y) + "\t" + str(atomH1.z) + "\n"))
+            file.write(str(atomH2.type + "\t" + str(atomH2.x) + "\t" + str(atomH2.y) + "\t" + str(atomH2.z) + "\n"))
 
-    file.write(str(hydroxideOxygen.type + "\t" + str(hydroxideOxygen.x) + "\t" + str(hydroxideOxygen.y) + "\t" + str(
-        hydroxideOxygen.z) + "\n"))
-    file.write(str(
-        hydroxideHydrogen.type + "\t" + str(hydroxideHydrogen.x) + "\t" + str(hydroxideHydrogen.y) + "\t" + str(
-            hydroxideHydrogen.z) + "\n"))
-    file.write("")
-    file.close()
-
+        file.write(str(hydroxideOxygen.type + "\t" + str(hydroxideOxygen.x) + "\t" + str(hydroxideOxygen.y) + "\t" + str(
+            hydroxideOxygen.z) + "\n"))
+        file.write(str(
+            hydroxideHydrogen.type + "\t" + str(hydroxideHydrogen.x) + "\t" + str(hydroxideHydrogen.y) + "\t" + str(
+                hydroxideHydrogen.z) + "\n"))
+        file.write("")
     clusterConfigurations = list(string.ascii_uppercase[0:len(waterOxygen)])
 
     ####### HYDROXIDE #######
@@ -94,41 +92,37 @@ def printClusterHydroxide(waterHydrogen, waterOxygen, hydroxideOxygen, hydroxide
         os.mkdir("OH")
 
     OHFileName = str("OH/" + str(itr) + ".com")
-    file = open(OHFileName, "w")
-    file.write("t = " + str(cluster) + "\n")
-    file.write("OH CLUSTER" + "\n")
-    file.write(str(hydroxideOxygen.type + "\t" + str(hydroxideOxygen.x) + "\t" + str(hydroxideOxygen.y) + "\t" + str(
-        hydroxideOxygen.z) + "\n"))
-    file.write(str(
-        hydroxideHydrogen.type + "\t" + str(hydroxideHydrogen.x) + "\t" + str(hydroxideHydrogen.y) + "\t" + str(
-            hydroxideHydrogen.z) + "\n"))
-    file.write("")
-    file.close()
-
+    with open(OHFileName, "w") as file:
+        file.write("t = " + str(cluster) + "\n")
+        file.write("OH CLUSTER" + "\n")
+        file.write(str(hydroxideOxygen.type + "\t" + str(hydroxideOxygen.x) + "\t" + str(hydroxideOxygen.y) + "\t" + str(
+            hydroxideOxygen.z) + "\n"))
+        file.write(str(
+            hydroxideHydrogen.type + "\t" + str(hydroxideHydrogen.x) + "\t" + str(hydroxideHydrogen.y) + "\t" + str(
+                hydroxideHydrogen.z) + "\n"))
+        file.write("")
     ###### 1 Cluster ######
     for m in range(len(waterOxygen)):
         if not os.path.exists(clusterConfigurations[m]):
             os.mkdir(clusterConfigurations[m])
 
         FileName1 = clusterConfigurations[m] + "/" + str(itr) + ".com"
-        file = open(FileName1, "w")
-        file.write("t = " + str(cluster) + "\n")
-        file.write(clusterConfigurations[m] + " Cluster" + "\n")
-        atomH1 = waterHydrogen[m][0]
-        atomH2 = waterHydrogen[m][1]
-        atomO = waterOxygen[m]
-        file.write(str(atomO.type + "\t" + str(atomO.x) + "\t" + str(atomO.y) + "\t" + str(atomO.z) + "\n"))
-        file.write(str(atomH1.type + "\t" + str(atomH1.x) + "\t" + str(atomH1.y) + "\t" + str(atomH1.z) + "\n"))
-        file.write(str(atomH2.type + "\t" + str(atomH2.x) + "\t" + str(atomH2.y) + "\t" + str(atomH2.z) + "\n"))
-        file.write(
-            str(hydroxideOxygen.type + "\t" + str(hydroxideOxygen.x) + "\t" + str(hydroxideOxygen.y) + "\t" + str(
-                hydroxideOxygen.z) + "\n"))
-        file.write(str(
-            hydroxideHydrogen.type + "\t" + str(hydroxideHydrogen.x) + "\t" + str(hydroxideHydrogen.y) + "\t" + str(
-                hydroxideHydrogen.z) + "\n"))
-        file.write("")
-        file.close()
-
+        with open(FileName1, "w") as file:
+            file.write("t = " + str(cluster) + "\n")
+            file.write(clusterConfigurations[m] + " Cluster" + "\n")
+            atomH1 = waterHydrogen[m][0]
+            atomH2 = waterHydrogen[m][1]
+            atomO = waterOxygen[m]
+            file.write(str(atomO.type + "\t" + str(atomO.x) + "\t" + str(atomO.y) + "\t" + str(atomO.z) + "\n"))
+            file.write(str(atomH1.type + "\t" + str(atomH1.x) + "\t" + str(atomH1.y) + "\t" + str(atomH1.z) + "\n"))
+            file.write(str(atomH2.type + "\t" + str(atomH2.x) + "\t" + str(atomH2.y) + "\t" + str(atomH2.z) + "\n"))
+            file.write(
+                str(hydroxideOxygen.type + "\t" + str(hydroxideOxygen.x) + "\t" + str(hydroxideOxygen.y) + "\t" + str(
+                    hydroxideOxygen.z) + "\n"))
+            file.write(str(
+                hydroxideHydrogen.type + "\t" + str(hydroxideHydrogen.x) + "\t" + str(hydroxideHydrogen.y) + "\t" + str(
+                    hydroxideHydrogen.z) + "\n"))
+            file.write("")
         if (len(waterHydrogen) > 2):
             Nminus1 = [x for i, x in enumerate(clusterConfigurations) if i != m]
             waterHydrogen_N1 = [x for i, x in enumerate(waterHydrogen) if i != m]
@@ -140,33 +134,31 @@ def printClusterHydroxide(waterHydrogen, waterOxygen, hydroxideOxygen, hydroxide
                 os.mkdir(Nminus1)
 
             FileNameN1 = Nminus1 + "/" + str(itr) + ".com"
-            file = open(FileNameN1, "w")
-            file.write("t = " + str(cluster) + "\n")
-            file.write(Nminus1 + " Cluster" + "\n")
+            with open(FileNameN1, "w") as file:
+                file.write("t = " + str(cluster) + "\n")
+                file.write(Nminus1 + " Cluster" + "\n")
 
-            for l in range(len(waterHydrogen_N1)):
-                atomH1_N1 = waterHydrogen_N1[l][0]
-                atomH2_N1 = waterHydrogen_N1[l][1]
-                atomO_N1 = waterOxygen_N1[l]
+                for l in range(len(waterHydrogen_N1)):
+                    atomH1_N1 = waterHydrogen_N1[l][0]
+                    atomH2_N1 = waterHydrogen_N1[l][1]
+                    atomO_N1 = waterOxygen_N1[l]
+                    file.write(
+                        str(atomO_N1.type + "\t" + str(atomO_N1.x) + "\t" + str(atomO_N1.y) + "\t" + str(
+                            atomO_N1.z) + "\n"))
+                    file.write(str(
+                        atomH1_N1.type + "\t" + str(atomH1_N1.x) + "\t" + str(atomH1_N1.y) + "\t" + str(
+                            atomH1_N1.z) + "\n"))
+                    file.write(str(
+                        atomH2_N1.type + "\t" + str(atomH2_N1.x) + "\t" + str(atomH2_N1.y) + "\t" + str(
+                            atomH2_N1.z) + "\n"))
+
                 file.write(
-                    str(atomO_N1.type + "\t" + str(atomO_N1.x) + "\t" + str(atomO_N1.y) + "\t" + str(
-                        atomO_N1.z) + "\n"))
+                    str(hydroxideOxygen.type + "\t" + str(hydroxideOxygen.x) + "\t" + str(hydroxideOxygen.y) + "\t" + str(
+                        hydroxideOxygen.z) + "\n"))
                 file.write(str(
-                    atomH1_N1.type + "\t" + str(atomH1_N1.x) + "\t" + str(atomH1_N1.y) + "\t" + str(
-                        atomH1_N1.z) + "\n"))
-                file.write(str(
-                    atomH2_N1.type + "\t" + str(atomH2_N1.x) + "\t" + str(atomH2_N1.y) + "\t" + str(
-                        atomH2_N1.z) + "\n"))
-
-            file.write(
-                str(hydroxideOxygen.type + "\t" + str(hydroxideOxygen.x) + "\t" + str(hydroxideOxygen.y) + "\t" + str(
-                    hydroxideOxygen.z) + "\n"))
-            file.write(str(
-                hydroxideHydrogen.type + "\t" + str(hydroxideHydrogen.x) + "\t" + str(hydroxideHydrogen.y) + "\t" + str(
-                    hydroxideHydrogen.z) + "\n"))
-            file.write("")
-            file.close()
-
+                    hydroxideHydrogen.type + "\t" + str(hydroxideHydrogen.x) + "\t" + str(hydroxideHydrogen.y) + "\t" + str(
+                        hydroxideHydrogen.z) + "\n"))
+                file.write("")
     return None
 
 
@@ -189,16 +181,16 @@ def clusterIon(pdFrame, clusterSize, clusterLength, ion):
 
     for oxygen in oxygenList:
 
-        for n in range(len(hydrogenCombs)):
-            atomH1 = pdFrame.loc[hydrogenCombs[n][0]]
-            atomH2 = pdFrame.loc[hydrogenCombs[n][1]]
+        for hydrogenComb in hydrogenCombs:
+            atomH1 = pdFrame.loc[hydrogenComb[0]]
+            atomH2 = pdFrame.loc[hydrogenComb[1]]
             atomO = pdFrame.loc[oxygen]
 
             if mo.isWater(atomH1, atomO, atomH2):
                 isWaterBool.append(True)
-                waterHydrogenIndex.append(hydrogenCombs[n][0])
-                waterHydrogenIndex.append(hydrogenCombs[n][1])
-                waterHydrogenPairIndex.append([hydrogenCombs[n][0], hydrogenCombs[n][1]])
+                waterHydrogenIndex.append(hydrogenComb[0])
+                waterHydrogenIndex.append(hydrogenComb[1])
+                waterHydrogenPairIndex.append([hydrogenComb[0], hydrogenComb[1]])
                 waterOxygenIndex.append(oxygen)
 
     if sum(isWaterBool) == (clusterSize - 1) / 3:
@@ -225,22 +217,20 @@ def printClusterIon(waterHydrogen, waterOxygen, ionFrame, cluster, itr):
         os.mkdir("full")
 
     fullFileName = str("full/" + str(itr) + ".com")
-    file = open(fullFileName, "w")
-    file.write("t = " + str(cluster) + "\n")
-    file.write('FULL CLUSTER' + "\n")
+    with open(fullFileName, "w") as file:
+        file.write("t = " + str(cluster) + "\n")
+        file.write('FULL CLUSTER' + "\n")
 
-    for m in range(len(waterOxygen)):
-        atomH1 = waterHydrogen[m][0]
-        atomH2 = waterHydrogen[m][1]
-        atomO = waterOxygen[m]
-        file.write(str(atomO.type + "\t" + str(atomO.x) + "\t" + str(atomO.y) + "\t" + str(atomO.z) + "\n"))
-        file.write(str(atomH1.type + "\t" + str(atomH1.x) + "\t" + str(atomH1.y) + "\t" + str(atomH1.z) + "\n"))
-        file.write(str(atomH2.type + "\t" + str(atomH2.x) + "\t" + str(atomH2.y) + "\t" + str(atomH2.z) + "\n"))
+        for m in range(len(waterOxygen)):
+            atomH1 = waterHydrogen[m][0]
+            atomH2 = waterHydrogen[m][1]
+            atomO = waterOxygen[m]
+            file.write(str(atomO.type + "\t" + str(atomO.x) + "\t" + str(atomO.y) + "\t" + str(atomO.z) + "\n"))
+            file.write(str(atomH1.type + "\t" + str(atomH1.x) + "\t" + str(atomH1.y) + "\t" + str(atomH1.z) + "\n"))
+            file.write(str(atomH2.type + "\t" + str(atomH2.x) + "\t" + str(atomH2.y) + "\t" + str(atomH2.z) + "\n"))
 
-    file.write(str(ionFrame.type + "\t" + str(ionFrame.x) + "\t" + str(ionFrame.y) + "\t" + str(ionFrame.z) + "\n"))
-    file.write("")
-    file.close()
-
+        file.write(str(ionFrame.type + "\t" + str(ionFrame.x) + "\t" + str(ionFrame.y) + "\t" + str(ionFrame.z) + "\n"))
+        file.write("")
     clusterConfigurations = list(string.ascii_uppercase[0:len(waterOxygen)])
 
     # ####### ION #######
@@ -263,20 +253,18 @@ def printClusterIon(waterHydrogen, waterOxygen, ionFrame, cluster, itr):
             os.mkdir(clusterConfigurations[m])
 
         FileName1 = clusterConfigurations[m] + "/" + str(itr) + ".com"
-        file = open(FileName1, "w")
-        file.write("t = " + str(cluster) + "\n")
-        file.write(clusterConfigurations[m] + " Cluster" + "\n")
-        atomH1 = waterHydrogen[m][0]
-        atomH2 = waterHydrogen[m][1]
-        atomO = waterOxygen[m]
-        file.write(str(atomO.type + "\t" + str(atomO.x) + "\t" + str(atomO.y) + "\t" + str(atomO.z) + "\n"))
-        file.write(str(atomH1.type + "\t" + str(atomH1.x) + "\t" + str(atomH1.y) + "\t" + str(atomH1.z) + "\n"))
-        file.write(str(atomH2.type + "\t" + str(atomH2.x) + "\t" + str(atomH2.y) + "\t" + str(atomH2.z) + "\n"))
-        file.write(str(ionFrame.type + "\t" + str(ionFrame.x) + "\t" + str(ionFrame.y) + "\t" + str(
-            ionFrame.z) + "\n"))
-        file.write("")
-        file.close()
-
+        with open(FileName1, "w") as file:
+            file.write("t = " + str(cluster) + "\n")
+            file.write(clusterConfigurations[m] + " Cluster" + "\n")
+            atomH1 = waterHydrogen[m][0]
+            atomH2 = waterHydrogen[m][1]
+            atomO = waterOxygen[m]
+            file.write(str(atomO.type + "\t" + str(atomO.x) + "\t" + str(atomO.y) + "\t" + str(atomO.z) + "\n"))
+            file.write(str(atomH1.type + "\t" + str(atomH1.x) + "\t" + str(atomH1.y) + "\t" + str(atomH1.z) + "\n"))
+            file.write(str(atomH2.type + "\t" + str(atomH2.x) + "\t" + str(atomH2.y) + "\t" + str(atomH2.z) + "\n"))
+            file.write(str(ionFrame.type + "\t" + str(ionFrame.x) + "\t" + str(ionFrame.y) + "\t" + str(
+                ionFrame.z) + "\n"))
+            file.write("")
         if (len(waterHydrogen) > 2):
             Nminus1 = [x for i, x in enumerate(clusterConfigurations) if i != m]
             waterHydrogen_N1 = [x for i, x in enumerate(waterHydrogen) if i != m]
@@ -288,30 +276,28 @@ def printClusterIon(waterHydrogen, waterOxygen, ionFrame, cluster, itr):
                 os.mkdir(Nminus1)
 
             FileNameN1 = Nminus1 + "/" + str(itr) + ".com"
-            file = open(FileNameN1, "w")
-            file.write("t = " + str(cluster) + "\n")
-            file.write(Nminus1 + " Cluster" + "\n")
+            with open(FileNameN1, "w") as file:
+                file.write("t = " + str(cluster) + "\n")
+                file.write(Nminus1 + " Cluster" + "\n")
 
-            for l in range(len(waterHydrogen_N1)):
-                atomH1_N1 = waterHydrogen_N1[l][0]
-                atomH2_N1 = waterHydrogen_N1[l][1]
-                atomO_N1 = waterOxygen_N1[l]
+                for l in range(len(waterHydrogen_N1)):
+                    atomH1_N1 = waterHydrogen_N1[l][0]
+                    atomH2_N1 = waterHydrogen_N1[l][1]
+                    atomO_N1 = waterOxygen_N1[l]
+                    file.write(
+                        str(atomO_N1.type + "\t" + str(atomO_N1.x) + "\t" + str(atomO_N1.y) + "\t" + str(
+                            atomO_N1.z) + "\n"))
+                    file.write(str(
+                        atomH1_N1.type + "\t" + str(atomH1_N1.x) + "\t" + str(atomH1_N1.y) + "\t" + str(
+                            atomH1_N1.z) + "\n"))
+                    file.write(str(
+                        atomH2_N1.type + "\t" + str(atomH2_N1.x) + "\t" + str(atomH2_N1.y) + "\t" + str(
+                            atomH2_N1.z) + "\n"))
+
                 file.write(
-                    str(atomO_N1.type + "\t" + str(atomO_N1.x) + "\t" + str(atomO_N1.y) + "\t" + str(
-                        atomO_N1.z) + "\n"))
-                file.write(str(
-                    atomH1_N1.type + "\t" + str(atomH1_N1.x) + "\t" + str(atomH1_N1.y) + "\t" + str(
-                        atomH1_N1.z) + "\n"))
-                file.write(str(
-                    atomH2_N1.type + "\t" + str(atomH2_N1.x) + "\t" + str(atomH2_N1.y) + "\t" + str(
-                        atomH2_N1.z) + "\n"))
-
-            file.write(
-                str(ionFrame.type + "\t" + str(ionFrame.x) + "\t" + str(ionFrame.y) + "\t" + str(
-                    ionFrame.z) + "\n"))
-            file.write("")
-            file.close()
-
+                    str(ionFrame.type + "\t" + str(ionFrame.x) + "\t" + str(ionFrame.y) + "\t" + str(
+                        ionFrame.z) + "\n"))
+                file.write("")
     return None
 
 
@@ -332,16 +318,16 @@ def clusterProton(pdFrame, clusterSize, clusterLength):
 
     for oxygen in oxygenList:
 
-        for n in range(len(hydrogenCombs)):
-            atomH1 = pdFrame.loc[hydrogenCombs[n][0]]
-            atomH2 = pdFrame.loc[hydrogenCombs[n][1]]
+        for hydrogenComb in hydrogenCombs:
+            atomH1 = pdFrame.loc[hydrogenComb[0]]
+            atomH2 = pdFrame.loc[hydrogenComb[1]]
             atomO = pdFrame.loc[oxygen]
 
             if mo.isWater(atomH1, atomO, atomH2):
                 isWaterBool.append(True)
-                waterHydrogenIndex.append(hydrogenCombs[n][0])
-                waterHydrogenIndex.append(hydrogenCombs[n][1])
-                waterHydrogenPairIndex.append([hydrogenCombs[n][0], hydrogenCombs[n][1]])
+                waterHydrogenIndex.append(hydrogenComb[0])
+                waterHydrogenIndex.append(hydrogenComb[1])
+                waterHydrogenPairIndex.append([hydrogenComb[0], hydrogenComb[1]])
                 waterOxygenIndex.append(oxygen)
 
     if sum(isWaterBool) == (clusterSize - 1) / 3:
@@ -375,23 +361,21 @@ def printClusterProton(waterHydrogen, waterOxygen, protonHydrogen, cluster, itr)
         os.mkdir("full")
 
     fullFileName = str("full/" + str(itr) + ".com")
-    file = open(fullFileName, "w")
-    file.write("t = " + str(cluster) + "\n")
-    file.write('FULL CLUSTER' + "\n")
+    with open(fullFileName, "w") as file:
+        file.write("t = " + str(cluster) + "\n")
+        file.write('FULL CLUSTER' + "\n")
 
-    for m in range(len(waterOxygen)):
-        atomH1 = waterHydrogen[m][0]
-        atomH2 = waterHydrogen[m][1]
-        atomO = waterOxygen[m]
-        file.write(str(atomO.type + "\t" + str(atomO.x) + "\t" + str(atomO.y) + "\t" + str(atomO.z) + "\n"))
-        file.write(str(atomH1.type + "\t" + str(atomH1.x) + "\t" + str(atomH1.y) + "\t" + str(atomH1.z) + "\n"))
-        file.write(str(atomH2.type + "\t" + str(atomH2.x) + "\t" + str(atomH2.y) + "\t" + str(atomH2.z) + "\n"))
+        for m in range(len(waterOxygen)):
+            atomH1 = waterHydrogen[m][0]
+            atomH2 = waterHydrogen[m][1]
+            atomO = waterOxygen[m]
+            file.write(str(atomO.type + "\t" + str(atomO.x) + "\t" + str(atomO.y) + "\t" + str(atomO.z) + "\n"))
+            file.write(str(atomH1.type + "\t" + str(atomH1.x) + "\t" + str(atomH1.y) + "\t" + str(atomH1.z) + "\n"))
+            file.write(str(atomH2.type + "\t" + str(atomH2.x) + "\t" + str(atomH2.y) + "\t" + str(atomH2.z) + "\n"))
 
-    file.write(str(protonHydrogen.type + "\t" + str(protonHydrogen.x) + "\t" + str(protonHydrogen.y) + "\t" + str(
-        protonHydrogen.z) + "\n"))
-    file.write("")
-    file.close()
-
+        file.write(str(protonHydrogen.type + "\t" + str(protonHydrogen.x) + "\t" + str(protonHydrogen.y) + "\t" + str(
+            protonHydrogen.z) + "\n"))
+        file.write("")
     clusterConfigurations = list(string.ascii_uppercase[0:len(waterOxygen)])
 
     # ####### HYDROXIDE #######
@@ -414,20 +398,18 @@ def printClusterProton(waterHydrogen, waterOxygen, protonHydrogen, cluster, itr)
             os.mkdir(clusterConfigurations[m])
 
         FileName1 = clusterConfigurations[m] + "/" + str(itr) + ".com"
-        file = open(FileName1, "w")
-        file.write("t = " + str(cluster) + "\n")
-        file.write(clusterConfigurations[m] + " Cluster" + "\n")
-        atomH1 = waterHydrogen[m][0]
-        atomH2 = waterHydrogen[m][1]
-        atomO = waterOxygen[m]
-        file.write(str(atomO.type + "\t" + str(atomO.x) + "\t" + str(atomO.y) + "\t" + str(atomO.z) + "\n"))
-        file.write(str(atomH1.type + "\t" + str(atomH1.x) + "\t" + str(atomH1.y) + "\t" + str(atomH1.z) + "\n"))
-        file.write(str(atomH2.type + "\t" + str(atomH2.x) + "\t" + str(atomH2.y) + "\t" + str(atomH2.z) + "\n"))
-        file.write(str(protonHydrogen.type + "\t" + str(protonHydrogen.x) + "\t" + str(protonHydrogen.y) + "\t" + str(
-            protonHydrogen.z) + "\n"))
-        file.write("")
-        file.close()
-
+        with open(FileName1, "w") as file:
+            file.write("t = " + str(cluster) + "\n")
+            file.write(clusterConfigurations[m] + " Cluster" + "\n")
+            atomH1 = waterHydrogen[m][0]
+            atomH2 = waterHydrogen[m][1]
+            atomO = waterOxygen[m]
+            file.write(str(atomO.type + "\t" + str(atomO.x) + "\t" + str(atomO.y) + "\t" + str(atomO.z) + "\n"))
+            file.write(str(atomH1.type + "\t" + str(atomH1.x) + "\t" + str(atomH1.y) + "\t" + str(atomH1.z) + "\n"))
+            file.write(str(atomH2.type + "\t" + str(atomH2.x) + "\t" + str(atomH2.y) + "\t" + str(atomH2.z) + "\n"))
+            file.write(str(protonHydrogen.type + "\t" + str(protonHydrogen.x) + "\t" + str(protonHydrogen.y) + "\t" + str(
+                protonHydrogen.z) + "\n"))
+            file.write("")
         if (len(waterHydrogen) > 2):
             Nminus1 = [x for i, x in enumerate(clusterConfigurations) if i != m]
             waterHydrogen_N1 = [x for i, x in enumerate(waterHydrogen) if i != m]
@@ -439,28 +421,26 @@ def printClusterProton(waterHydrogen, waterOxygen, protonHydrogen, cluster, itr)
                 os.mkdir(Nminus1)
 
             FileNameN1 = Nminus1 + "/" + str(itr) + ".com"
-            file = open(FileNameN1, "w")
-            file.write("t = " + str(cluster) + "\n")
-            file.write(Nminus1 + " Cluster" + "\n")
+            with open(FileNameN1, "w") as file:
+                file.write("t = " + str(cluster) + "\n")
+                file.write(Nminus1 + " Cluster" + "\n")
 
-            for l in range(len(waterHydrogen_N1)):
-                atomH1_N1 = waterHydrogen_N1[l][0]
-                atomH2_N1 = waterHydrogen_N1[l][1]
-                atomO_N1 = waterOxygen_N1[l]
+                for l in range(len(waterHydrogen_N1)):
+                    atomH1_N1 = waterHydrogen_N1[l][0]
+                    atomH2_N1 = waterHydrogen_N1[l][1]
+                    atomO_N1 = waterOxygen_N1[l]
+                    file.write(
+                        str(atomO_N1.type + "\t" + str(atomO_N1.x) + "\t" + str(atomO_N1.y) + "\t" + str(
+                            atomO_N1.z) + "\n"))
+                    file.write(str(
+                        atomH1_N1.type + "\t" + str(atomH1_N1.x) + "\t" + str(atomH1_N1.y) + "\t" + str(
+                            atomH1_N1.z) + "\n"))
+                    file.write(str(
+                        atomH2_N1.type + "\t" + str(atomH2_N1.x) + "\t" + str(atomH2_N1.y) + "\t" + str(
+                            atomH2_N1.z) + "\n"))
+
                 file.write(
-                    str(atomO_N1.type + "\t" + str(atomO_N1.x) + "\t" + str(atomO_N1.y) + "\t" + str(
-                        atomO_N1.z) + "\n"))
-                file.write(str(
-                    atomH1_N1.type + "\t" + str(atomH1_N1.x) + "\t" + str(atomH1_N1.y) + "\t" + str(
-                        atomH1_N1.z) + "\n"))
-                file.write(str(
-                    atomH2_N1.type + "\t" + str(atomH2_N1.x) + "\t" + str(atomH2_N1.y) + "\t" + str(
-                        atomH2_N1.z) + "\n"))
-
-            file.write(
-                str(protonHydrogen.type + "\t" + str(protonHydrogen.x) + "\t" + str(protonHydrogen.y) + "\t" + str(
-                    protonHydrogen.z) + "\n"))
-            file.write("")
-            file.close()
-
+                    str(protonHydrogen.type + "\t" + str(protonHydrogen.x) + "\t" + str(protonHydrogen.y) + "\t" + str(
+                        protonHydrogen.z) + "\n"))
+                file.write("")
     return None
