@@ -22,11 +22,12 @@ age = args.age
 
 ##### If the ion a halide then add this to the pattern search cp2k trajectory ######
 
-if ion in {"OH", "H"}:
+if ion == "OH" or ion == "H":
     cp2K_search = "(?:i |H|O)"
-
 else:
-    cp2K_search = str("(?:i |H|O|" + ion + ")")
+    cp2K_search = "(?:i |H|O)"
+    cp2K_search = cp2K_search + ion
+    cp2K_search = cp2K_search + ")"
 
 #### Send pattern to data read in in atom.py and return them as a pandas dataframe###
 pattern = re.compile(cp2K_search)
@@ -39,9 +40,7 @@ itr = 1
 age = math.floor(maxFrame/2) if age == "Y" else 0
 ##### find if ion is hydroxide #####
 if ion == "OH":
-
     for cluster in range(age, maxFrame):
-
         pdFrame_0 = pdFrames.loc[cluster:((clusterSize - 1) + cluster), :]
         #### Get cluster infromation for specific data frame #####
         clusterMe = cl.clusterHydroxide(pdFrame_0, clusterSize, clusterLength)
@@ -55,13 +54,9 @@ if ion == "OH":
             ## If it is a cluster print the configurations ##
             cl.printClusterHydroxide(waterHydrogen, waterOxygen, hydroxideOxygen, hydroxideHydrogen, cluster, itr)
             itr += 1
-
 elif ion == "H":
-
     for cluster in range(age, maxFrame):
-
         pdFrame_0 = pdFrames.loc[cluster:((clusterSize - 1) + cluster), :]
-
         clusterMe = cl.clusterProton(pdFrame_0, clusterSize, clusterLength)
         clusterBool = clusterMe[0]
         waterHydrogen = clusterMe[1]
@@ -75,7 +70,6 @@ elif ion == "H":
 elif ion in {"F", "Cl", "Br", "I"}:
     print("Hello")
     for cluster in range(age, maxFrame):
-
         pdFrame_0 = pdFrames.loc[cluster:((clusterSize - 1) + cluster), :]
         clusterMe = cl.clusterIon(pdFrame_0, clusterSize, clusterLength, ion)
         clusterBool = clusterMe[0]
@@ -84,7 +78,6 @@ elif ion in {"F", "Cl", "Br", "I"}:
         ionFrame = clusterMe[3]
 
         if clusterBool:
-
             cl.printClusterIon(waterHydrogen, waterOxygen, ionFrame, cluster, itr)
             itr += 1
 
@@ -96,4 +89,3 @@ print("Number of time steps: " + str(maxFrame - age))
 print("Number of time steps clustered: " + str(itr - 1))
 print("\n\n")
 print("Naive p(n) = " + str(float((itr - 1)/(maxFrame - age))))
-

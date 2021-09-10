@@ -120,10 +120,7 @@ class xdrfile:
     def __iter__(self):
         f = frame(self.natoms, self.mode)
         # temporary c_type variables (frame variables are python type)
-        step = c_int()
-        time = c_float()
-        prec = c_float()
-        lam = c_float()
+        step, time, prec, lam = c_int(), c_float(), c_float(), c_float()
         while True:
             # read next frame
             if not self.mode & mTrr:
