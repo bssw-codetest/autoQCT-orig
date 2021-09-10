@@ -20,14 +20,12 @@ ion = str(args.ion)
 cp2k = args.file
 age = args.age
 
+cp2K_search = "(?:i |H|O)"
 ##### If the ion a halide then add this to the pattern search cp2k trajectory ######
 
-if ion == "OH" or ion == "H":
-    cp2K_search = "(?:i |H|O)"
-else:
-    cp2K_search = "(?:i |H|O)"
-    cp2K_search = cp2K_search + ion
-    cp2K_search = cp2K_search + ")"
+if ion not in ["OH", "H"]:
+    cp2K_search += ion
+    cp2K_search += ")"
 
 #### Send pattern to data read in in atom.py and return them as a pandas dataframe###
 pattern = re.compile(cp2K_search)
